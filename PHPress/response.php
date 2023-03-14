@@ -1,7 +1,6 @@
 <?php
 
 class Response{
-
     public string $body;
     public string $header;
     public int $status_code;
@@ -23,18 +22,21 @@ class Response{
         fclose($filecontent);
     }
 
-    public function set_header($header){
+    private static function build_header($header) : string{
         $string_header = "";
         foreach($header as $key => $value){
             $string_header .= "{$key}: {$value}\r\n";
         }
-        $this->header = $string_header;
+        return $string_header;
+    }
+
+    public function set_header($header){
+        $this->header .= $this->build_header($header);
     }
 
     public function status_code($code){
         $this->status_code = $code;
     }
-
 }
 
 ?>

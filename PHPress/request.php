@@ -6,7 +6,7 @@ class Request{
     public $body;
     public $headers;
 
-    function __construct()
+    public function __construct()
     {
         $this->method = "";
         $this->route = "";
@@ -18,7 +18,8 @@ class Request{
         $split_double_line = explode("\r\n\r\n", $request);
 
         if($split_double_line[1] != ""){
-            $this->body = $split_double_line[1];
+            $parse = new Parser();
+            $this->body = $parse->content_parse($split_double_line[1]);
         }
         
         $headers = explode("\r\n", $split_double_line[0]);

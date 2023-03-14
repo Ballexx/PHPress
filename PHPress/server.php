@@ -1,9 +1,5 @@
 <?php
 
-include_once("request.php");
-include_once("router.php");
-include_once("response.php");
-
 class Server{
 
     protected string $host;
@@ -11,7 +7,7 @@ class Server{
     private $sock;
     private $router;
 
-    function __construct($host, $port)
+    function __construct($host = "127.0.0.1", $port = 3000)
     {
         $this->host = $host;
         $this->port = $port;
@@ -24,23 +20,17 @@ class Server{
         socket_listen($this->sock, 1);
     }
 
-    private function search_path($path){
+    private function search_path($path, $method){
         $routes = $this->router->routes;
-        $paths = array();
         
         foreach($routes as $route){
-            array_push($paths, $route["path"]);
-        }
-
-        if(in_array($path, $paths)){
-            return $routes[array_search($path, $paths)];
+            if($route["method"] == $method && $route["path"] == $path) return $route;
         }
 
         return false;
     }
 
-    private function execute_handler($handler, $connection){
-        $req = new Request();
+    private function execute_handler($handler, $connection, $req){
         $res = new Response();
         
         call_user_func($handler, $req, $res);
@@ -58,17 +48,17 @@ class Server{
                 $request_content = socket_read($accept, 4096);
                 $req = new Request();
                 $req->request_parse($request_content);
-                $request = $this->search_path($req->route);
+                $request = $this->search_path($req->route, $req->method);
 
                 if($request){
-                    $this->execute_handler($request["handler"], $accept);
+                    $this->execute_handler($request["handler"], $accept, $req);
                 }
 
                 socket_close($accept);
 
             }
             catch(Exception $err){
-                echo $err, "\n";
+                print_r($err, "\n");
             }
         }
     }
