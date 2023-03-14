@@ -14,7 +14,7 @@ class Request{
         $this->body = "";
     }
 
-    function request_parse($request){
+    function request_parse(string $request){
         $split_double_line = explode("\r\n\r\n", $request);
 
         if($split_double_line[1] != ""){

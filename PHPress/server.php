@@ -23,6 +23,10 @@ class Server{
     private function search_path($path, $method){
         $routes = $this->router->routes;
         
+        if(str_ends_with($path, ".css") || str_ends_with($path, ".js")){
+            return $path;
+        }
+        
         foreach($routes as $route){
             if($route["method"] == $method && $route["path"] == $path) return $route;
         }
@@ -30,13 +34,16 @@ class Server{
         return false;
     }
 
-    private function execute_handler($handler, $connection, $req){
-        $res = new Response();
-        
-        call_user_func($handler, $req, $res);
-
+    private function write_response($res, $connection){
         $response = "HTTP/1.1 {$res->status_code}\r\n{$res->header}\r\n{$res->body}";
         socket_write($connection, $response, strlen($response));
+    }
+
+    private function execute_handler($handler, $connection, $req){
+        $res = new Response();
+        call_user_func($handler, $req, $res);
+
+        $this->write_response($res, $connection);
     }
 
     public function listen(){
@@ -50,12 +57,16 @@ class Server{
                 $req->request_parse($request_content);
                 $request = $this->search_path($req->route, $req->method);
 
-                if($request){
+                if($request && is_array($request)){
                     $this->execute_handler($request["handler"], $accept, $req);
                 }
-
+                elseif($request){
+                    $res = new Response();
+                    $res->send_static_file($request);
+                    $this->write_response($res, $accept);
+                }
+                
                 socket_close($accept);
-
             }
             catch(Exception $err){
                 print_r($err, "\n");
