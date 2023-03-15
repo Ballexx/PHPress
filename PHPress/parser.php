@@ -27,6 +27,13 @@ class Parser{
         }
         return $this->toJSON($content);
     }
+
+    public function cookie_parse($cookie) : array{
+        $kvp = explode("=",$cookie, 2);
+        return array(
+            $kvp[0] => $kvp[1]
+        );
+    }
 }
 
 ?>

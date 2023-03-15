@@ -28,10 +28,47 @@ class Router{
         $route = $this->create_route($path, $handler, "GET");
         array_push($this->routes, $route);
     }
+
     public function post($path, $handler){
         $route = $this->create_route($path, $handler, "POST");
         array_push($this->routes, $route);
     }
+
+    public function put($path, $handler){
+        $route = $this->create_route($path, $handler, "PUT");
+        array_push($this->routes, $route);
+    }
+
+    public function delete($path, $handler){
+        $route = $this->create_route($path, $handler, "DELETE");
+        array_push($this->routes, $route);
+    }
+
+    public function head($path, $handler){
+        $route = $this->create_route($path, $handler, "HEAD");
+        array_push($this->routes, $route);
+    }
+
+    public function options($path, $handler){
+        $route = $this->create_route($path, $handler, "OPTIONS");
+        array_push($this->routes, $route);
+    }
+
+    public function connect($path, $handler){
+        $route = $this->create_route($path, $handler, "CONNECT");
+        array_push($this->routes, $route);
+    }
+
+    public function trace($path, $handler){
+        $route = $this->create_route($path, $handler, "TRACE");
+        array_push($this->routes, $route);
+    }
+
+    public function patch($path, $handler){
+        $route = $this->create_route($path, $handler, "PATCH");
+        array_push($this->routes, $route);
+    }
+    
 }
 
 ?>

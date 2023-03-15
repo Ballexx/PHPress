@@ -34,6 +34,12 @@ class Request{
             $this->headers[$split_header[0]] = $split_header[1];
         }
     }
+
+    public function get_cookie(){
+        if(!in_array("Cookie", array_keys($this->headers))) return;
+        $parse = new Parser();
+        return $parse->cookie_parse($this->headers["Cookie"]);
+    }
 }
 
 ?>

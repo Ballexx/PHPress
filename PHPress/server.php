@@ -1,7 +1,6 @@
 <?php
 
 class Server{
-
     protected string $host;
     protected int $port;
     private $sock;
@@ -20,11 +19,13 @@ class Server{
         socket_listen($this->sock, 1);
     }
 
-    private function search_path($path, $method){
+    private function search_path($path, $method, $accept){
         $routes = $this->router->routes;
-        
+
         if(str_ends_with($path, ".css") || str_ends_with($path, ".js")){
-            return $path;
+            $serve_static = new FileServer();
+            $res = $serve_static->send_static_file($path);
+            $this->write_response($res, $accept);
         }
         
         foreach($routes as $route){
@@ -35,7 +36,8 @@ class Server{
     }
 
     private function write_response($res, $connection){
-        $response = "HTTP/1.1 {$res->status_code}\r\n{$res->header}\r\n{$res->body}";
+        $locked_header = Response::$locked_header;
+        $response = "HTTP/1.1 {$res->status_code}\r\n{$locked_header}{$res->header}\r\n{$res->body}";
         socket_write($connection, $response, strlen($response));
     }
 
@@ -55,15 +57,10 @@ class Server{
                 $request_content = socket_read($accept, 4096);
                 $req = new Request();
                 $req->request_parse($request_content);
-                $request = $this->search_path($req->route, $req->method);
+                $request = $this->search_path($req->route, $req->method, $accept);
 
                 if($request && is_array($request)){
                     $this->execute_handler($request["handler"], $accept, $req);
-                }
-                elseif($request){
-                    $res = new Response();
-                    $res->send_static_file($request);
-                    $this->write_response($res, $accept);
                 }
                 
                 socket_close($accept);
