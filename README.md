@@ -81,7 +81,7 @@ new Server("host", "port"); #hosts server on given host and port¨
 
 $server_name->listen(); #listens to server
 
-$name_of_routers->get("route", "function"); #mounts function and method type to route
+$name_of_router->get("route", "function"); #mounts function and method type to route
 
 #the same syntax works for this list under
 #post, delete, put, patch, connect, options, head, trace
