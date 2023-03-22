@@ -11,7 +11,7 @@ FileServer::serve_static("public");
 
 $server = new Server("127.0.0.1", 5000);
 
-function test($req, $res){
+function jsontest($req, $res){
     $json = array(
         "cool"=>"Works"
     );
@@ -19,19 +19,19 @@ function test($req, $res){
     $res->json($json);
 
 }
-function dogs($req, $res){
+function cookietest($req, $res){
     $res->set_cookie("thisisasecrettoken", "SameSite=None; Secure; HttpOnly; Max-Age=3600; Path=/index");
     print_r($req->get_cookie());
     $res->send_file("public/test.html");
 }
 
-function cool($req, $res){
-    print_r($req->body["cool"]);
+function bodytest($req, $res){
+    print_r($req->body["this is a body"]);
 }
 
-$router->get("/", "test");
-$router->get("/index", "dogs");
-$router->post("/index", "cool");
+$router->get("/", "jsontest");
+$router->get("/index", "cookietest");
+$router->post("/index", "bodytest");
 
 $server->listen();
 
