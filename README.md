@@ -55,6 +55,12 @@ $server->listen();
 <?php
 $req->body; #gets request body
 
+$req->headers; #gets request headers
+
+$req->method; #gets request method
+
+$req->route; #gets request route
+
 $res->setcookie("token", "attributes"); #sets cookie with attributes
 
 $req->getcookie(); #gets cookie
