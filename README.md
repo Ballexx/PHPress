@@ -67,13 +67,13 @@ $res->json("json"); #sends json as response body
 
 $res->status("statuscode"); #sets response status 
 
-$res->set_header("array of headers"); #sets headers on specific response
+$res->set_header("associative array of headers (hashmap)"); #sets headers on specific response
 
 $res->redirect("url"); #redirects to given url
 
 Router::create_router(); #creates a static router instance
 
-Response::lock_headers("array of headers"); #creates a list of headers that will stay on every response
+Response::lock_headers("associative array of headers (hashmap)"); #creates a list of headers that will stay on every response
 
 Fileserver::serve_static("foldername"); #supports serving several static folders
 
